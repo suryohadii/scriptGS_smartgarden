@@ -1,0 +1,69 @@
+function doGet(e) { 
+Logger.log( JSON.stringify(e) );
+var result = 'Ok';
+if (e.parameter == 'undefined') {
+result = 'No Parameters';
+}
+else {
+var sheet_id = '1Z41DIlhEAh0we_I_X0Yt7mBLNaOwhwMhbUpeg8nB_Ks'; // Spreadsheet ID
+var sheet = SpreadsheetApp.openById(sheet_id).getActiveSheet();
+var newRow = sheet.getLastRow() + 1; 
+var rowData = [];
+var Curr_Date = Utilities.formatDate(new Date(), "Asia/Jakarta", 'dd/MM/yyyy');
+rowData[0] = Curr_Date; // Date in column A
+var Curr_Time = Utilities.formatDate(new Date(), "Asia/Jakarta", 'HH:mm:ss');
+rowData[1] = Curr_Time; // Time in column B
+for (var param in e.parameter) {
+Logger.log('In for loop, param=' + param);
+var value = stripQuotes(e.parameter[param]);
+Logger.log(param + ':' + e.parameter[param]);
+switch (param) {
+case 'averagepH':
+rowData[2] = value; // Temperature in column C
+result = 'Average Written on column C'; 
+break;
+case 'pH1':
+rowData[3] = value; // Humidity in column D
+result += 'pH1 Written on column D'; 
+break; 
+case 'pH2':
+rowData[4] = value; // Temperature in column C
+result = 'pH2 Written on column E'; 
+break;
+case 'average':
+rowData[5] = value; // Humidity in column D
+result += 'average Written on column F'; 
+break; 
+case 'soil1':
+rowData[6] = value; // Temperature in column C
+result = 'soil1 Written on column G'; 
+break;
+case 'soil2':
+rowData[7] = value; // Humidity in column D
+result += 'soil2 Written on column H'; 
+break; 
+case 'pompa1':
+rowData[8] = value; // Temperature in column C
+result = 'soil1 Written on column I'; 
+break;
+case 'pompa2':
+rowData[9] = value; // Humidity in column D
+result += 'soil2 Written on column J'; 
+break; 
+case 'pompaauto':
+rowData[10] = value; // Humidity in column D
+result += 'soil2 Written on column k'; 
+break; 
+default:
+result = "unsupported parameter";
+}
+}
+Logger.log(JSON.stringify(rowData));
+var newRange = sheet.getRange(newRow, 1, 1, rowData.length);
+newRange.setValues([rowData]);
+}
+return ContentService.createTextOutput(result);
+}
+function stripQuotes( value ) {
+return value.replace(/^["']|['"]$/g, "");
+}
